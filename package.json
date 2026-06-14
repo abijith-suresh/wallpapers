@@ -9,18 +9,20 @@
   },
   "license": "MIT",
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
+    "dev": "bun run wallpapers:sync && astro dev",
+    "build": "bun run wallpapers:sync && astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "type-check": "astro check",
+    "type-check": "astro check && tsc --noEmit",
     "lint": "biome lint .",
     "lint:fix": "biome lint --write --unsafe .",
     "format": "biome format --write .",
     "format:check": "biome format .",
+    "wallpapers:check": "bun scripts/sync-wallpapers.ts --check",
+    "wallpapers:sync": "bun scripts/sync-wallpapers.ts",
     "test": "vitest run --passWithNoTests",
     "test:watch": "vitest",
-    "verify": "bun run type-check && bun run lint && bun run format:check && bun run test && bun run build"
+    "verify": "bun run wallpapers:check && bun run type-check && bun run lint && bun run format:check && bun run test && bun run build"
   },
   "dependencies": {
     "astro": "^6.4.6"
@@ -28,6 +30,7 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
     "@biomejs/biome": "^2.5.0",
+    "@types/node": "^25.9.3",
     "typescript": "^6.0.3",
     "vitest": "^4.1.8"
   }
