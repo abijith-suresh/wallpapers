@@ -1,4 +1,6 @@
 ---
+import "../styles/global.css";
+
 interface Props {
   title: string;
   description: string;
@@ -15,12 +17,14 @@ const { title, description } = Astro.props;
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
     <meta name="theme-color" content="#111111" />
+    <link rel="preload" as="font" type="font/woff2" crossorigin="anonymous" href={`${import.meta.env.BASE_URL}fonts/IBMPlexSansVar-Roman.woff2`} />
+    <link rel="preload" as="font" type="font/woff2" crossorigin="anonymous" href={`${import.meta.env.BASE_URL}fonts/IBMPlexMono-Regular.woff2`} />
     <title>{title}</title>
   </head>
   <body>
+    <a href="#main-content" class="skip-link">Skip to content</a>
     <main id="main-content">
       <slot />
     </main>
   </body>
 </html>
-

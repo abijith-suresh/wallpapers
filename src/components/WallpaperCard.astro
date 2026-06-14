@@ -1,0 +1,40 @@
+---
+import type { Wallpaper } from "../lib/wallpapers";
+
+interface Props {
+  wallpaper: Wallpaper;
+}
+
+const { wallpaper } = Astro.props;
+---
+
+<article class="wallpaper-card">
+  <a class="wallpaper-preview-link" href={wallpaper.url} aria-label={`Open ${wallpaper.title}`}>
+    <img
+      class="wallpaper-preview"
+      src={wallpaper.url}
+      alt={wallpaper.title}
+      loading="lazy"
+      decoding="async"
+    />
+  </a>
+
+  <div class="wallpaper-meta">
+    <h2>{wallpaper.title}</h2>
+    {
+      wallpaper.creator || wallpaper.source ? (
+        <p>
+          {wallpaper.creator ? <span>{wallpaper.creator}</span> : null}
+          {wallpaper.creator && wallpaper.source ? <span aria-hidden="true"> / </span> : null}
+          {wallpaper.source ? <a href={wallpaper.source}>Source</a> : null}
+        </p>
+      ) : null
+    }
+  </div>
+
+  <div class="wallpaper-actions">
+    <a href={wallpaper.url}>Open</a>
+    <a href={wallpaper.url} download={wallpaper.fileName}>Download</a>
+  </div>
+</article>
+
