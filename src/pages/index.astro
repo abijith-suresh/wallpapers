@@ -1,8 +1,19 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import WallpaperGrid from "../components/WallpaperGrid.astro";
+import { getWallpapers } from "../lib/wallpapers";
+
+const wallpapers = await getWallpapers(import.meta.env.BASE_URL);
 ---
 
 <Layout title="Wallpapers" description="A small personal wallpaper gallery.">
-  <h1>Wallpapers</h1>
-</Layout>
+  <section class="page-shell" aria-labelledby="page-title">
+    <header class="page-header">
+      <p class="eyebrow">abijith-suresh/wallpapers</p>
+      <h1 id="page-title">Wallpapers</h1>
+      <p class="page-description">A small personal gallery for wallpapers I can legally share.</p>
+    </header>
 
+    <WallpaperGrid wallpapers={wallpapers} />
+  </section>
+</Layout>

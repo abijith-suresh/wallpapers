@@ -1,0 +1,27 @@
+---
+import type { Wallpaper } from "../lib/wallpapers";
+import WallpaperCard from "./WallpaperCard.astro";
+
+interface Props {
+  wallpapers: Wallpaper[];
+}
+
+const { wallpapers } = Astro.props;
+---
+
+{
+  wallpapers.length > 0 ? (
+    <ul class="wallpaper-grid" aria-label="Wallpapers">
+      {wallpapers.map((wallpaper) => (
+        <li>
+          <WallpaperCard wallpaper={wallpaper} />
+        </li>
+      ))}
+    </ul>
+  ) : (
+    <section class="empty-state" aria-label="No wallpapers">
+      <p>No wallpapers yet.</p>
+    </section>
+  )
+}
+
