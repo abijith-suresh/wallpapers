@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.astro/
+.DS_Store
+
+# Generated from the root wallpapers/ source folder.
+public/files/
+
