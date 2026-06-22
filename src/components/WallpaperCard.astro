@@ -1,40 +1,59 @@
 ---
-import type { Wallpaper } from "../lib/wallpapers";
+import { Picture } from "astro:assets";
+import type { CollectionEntry } from "astro:content";
+import type { ImageMetadata } from "astro";
 
 interface Props {
-  wallpaper: Wallpaper;
+  wallpaper: CollectionEntry<"wallpapers">;
+  index: number;
 }
 
-const { wallpaper } = Astro.props;
+const { wallpaper, index } = Astro.props;
+const { data } = wallpaper;
+
+const baseUrl = import.meta.env.BASE_URL;
+const fileUrl = `${baseUrl}files/${encodeURIComponent(data.fileName)}`;
+
+const images = import.meta.glob<{ default: ImageMetadata }>(
+  "/src/assets/wallpapers/*.{jpg,jpeg,png,webp,avif}"
+);
+const imageKey = `/src/assets/wallpapers/${data.fileName}`;
 ---
 
 <article class="wallpaper-card">
-  <a class="wallpaper-preview-link" href={wallpaper.url} aria-label={`Open ${wallpaper.title}`}>
-    <img
-      class="wallpaper-preview"
-      src={wallpaper.url}
-      alt={wallpaper.title}
-      loading="lazy"
-      decoding="async"
-    />
+  <a class="wallpaper-preview-link" href={fileUrl} aria-label={`Open ${data.title}`}>
+    {
+      images[imageKey] ? (
+        <Picture
+          src={images[imageKey]()}
+          formats={["avif", "webp"]}
+          widths={[400, 800, 1200]}
+          sizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          alt={data.title}
+          loading={index < 4 ? "eager" : "lazy"}
+          fetchpriority={index < 4 ? "high" : "auto"}
+        />
+      ) : (
+        <img
+          class="wallpaper-preview"
+          src={fileUrl}
+          alt={data.title}
+          loading="lazy"
+          decoding="async"
+        />
+      )
+    }
   </a>
 
   <div class="wallpaper-meta">
-    <h2>{wallpaper.title}</h2>
-    {
-      wallpaper.creator || wallpaper.source ? (
-        <p>
-          {wallpaper.creator ? <span>{wallpaper.creator}</span> : null}
-          {wallpaper.creator && wallpaper.source ? <span aria-hidden="true"> / </span> : null}
-          {wallpaper.source ? <a href={wallpaper.source}>Source</a> : null}
-        </p>
-      ) : null
-    }
+    <h2>{data.title}</h2>
+    <p class="wallpaper-resolution">{data.width} &times; {data.height}</p>
+    {data.creator ? <p>{data.creator}</p> : null}
   </div>
 
   <div class="wallpaper-actions">
-    <a href={wallpaper.url}>Open</a>
-    <a href={wallpaper.url} download={wallpaper.fileName}>Download</a>
+    <a href={fileUrl}>Open</a>
+    <a href={fileUrl} download={data.fileName}>Download</a>
   </div>
 </article>
 

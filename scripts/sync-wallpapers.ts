@@ -1,35 +1,21 @@
-import { cp, mkdir, readdir, readFile, rm, stat } from "node:fs/promises";
+import { cp, mkdir, readdir, rm, stat } from "node:fs/promises";
 import path from "node:path";
-import {
-  MAX_WALLPAPER_FILE_SIZE_BYTES,
-  PUBLIC_FILES_DIR,
-  ROOT_WALLPAPERS_DIR,
-  isSupportedWallpaperFile,
-} from "../src/lib/wallpapers";
+
+const ROOT_WALLPAPERS_DIR = path.join(process.cwd(), "wallpapers");
+const PUBLIC_FILES_DIR = path.join(process.cwd(), "public", "files");
+const ASSETS_WALLPAPERS_DIR = path.join(process.cwd(), "src", "assets", "wallpapers");
+const MAX_WALLPAPER_FILE_SIZE_BYTES = 10 * 1024 * 1024;
+
+const SUPPORTED_EXTENSIONS = new Set([".jpg", ".jpeg", ".png", ".webp", ".avif"]);
 
 const checkOnly = process.argv.includes("--check");
-const manifestPath = path.join(process.cwd(), "wallpapers.json");
+
+function isSupportedWallpaperFile(fileName: string): boolean {
+  return SUPPORTED_EXTENSIONS.has(path.extname(fileName).toLowerCase());
+}
 
 function formatBytes(bytes: number): string {
   return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
-}
-
-async function readManifestKeys(): Promise<string[]> {
-  try {
-    const manifest = JSON.parse(await readFile(manifestPath, "utf8")) as unknown;
-
-    if (!manifest || typeof manifest !== "object" || Array.isArray(manifest)) {
-      throw new Error("wallpapers.json must contain an object keyed by wallpaper filename");
-    }
-
-    return Object.keys(manifest);
-  } catch (error) {
-    if (error instanceof SyntaxError) {
-      throw new Error(`wallpapers.json is not valid JSON: ${error.message}`);
-    }
-
-    throw error;
-  }
 }
 
 async function main(): Promise<void> {
@@ -60,21 +46,19 @@ async function main(): Promise<void> {
     }
   }
 
-  const manifestKeys = await readManifestKeys();
-  const missingFiles = manifestKeys.filter((fileName) => !wallpaperFiles.includes(fileName));
-  if (missingFiles.length > 0) {
-    throw new Error(`wallpapers.json references missing files: ${missingFiles.join(", ")}`);
-  }
-
   if (checkOnly) {
     return;
   }
 
   await rm(PUBLIC_FILES_DIR, { recursive: true, force: true });
+  await rm(ASSETS_WALLPAPERS_DIR, { recursive: true, force: true });
   await mkdir(PUBLIC_FILES_DIR, { recursive: true });
+  await mkdir(ASSETS_WALLPAPERS_DIR, { recursive: true });
 
   for (const fileName of wallpaperFiles) {
-    await cp(path.join(ROOT_WALLPAPERS_DIR, fileName), path.join(PUBLIC_FILES_DIR, fileName));
+    const srcPath = path.join(ROOT_WALLPAPERS_DIR, fileName);
+    await cp(srcPath, path.join(PUBLIC_FILES_DIR, fileName));
+    await cp(srcPath, path.join(ASSETS_WALLPAPERS_DIR, fileName));
   }
 }
 
