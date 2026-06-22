@@ -11,6 +11,9 @@ interface Props {
 const { wallpaper, index } = Astro.props;
 const { data } = wallpaper;
 
+const slug = data.fileName.replace(/\.[^.]+$/, "");
+const detailUrl = `${import.meta.env.BASE_URL}w/${encodeURIComponent(slug)}/`;
+
 const baseUrl = import.meta.env.BASE_URL;
 const fileUrl = `${baseUrl}files/${encodeURIComponent(data.fileName)}`;
 
@@ -21,7 +24,12 @@ const imageKey = `/src/assets/wallpapers/${data.fileName}`;
 ---
 
 <article class="wallpaper-card">
-  <a class="wallpaper-preview-link" href={fileUrl} aria-label={`Open ${data.title}`}>
+  <a
+    class="wallpaper-preview-link"
+    href={detailUrl}
+    aria-label={`View ${data.title}`}
+    transition:name="wallpaper-image"
+  >
     {
       images[imageKey] ? (
         <Picture
@@ -46,14 +54,9 @@ const imageKey = `/src/assets/wallpapers/${data.fileName}`;
   </a>
 
   <div class="wallpaper-meta">
-    <h2>{data.title}</h2>
+    <h2><a href={detailUrl}>{data.title}</a></h2>
     <p class="wallpaper-resolution">{data.width} &times; {data.height}</p>
     {data.creator ? <p>{data.creator}</p> : null}
-  </div>
-
-  <div class="wallpaper-actions">
-    <a href={fileUrl}>Open</a>
-    <a href={fileUrl} download={data.fileName}>Download</a>
   </div>
 </article>
 
