@@ -11,6 +11,7 @@
   "scripts": {
     "dev": "bun run wallpapers:sync && astro dev",
     "build": "bun run wallpapers:sync && astro build",
+    "prepare": "husky",
     "preview": "astro preview",
     "astro": "astro",
     "type-check": "astro check && tsc --noEmit",
@@ -30,7 +31,11 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
     "@biomejs/biome": "^2.5.0",
+    "@commitlint/cli": "^19.8.0",
+    "@commitlint/config-conventional": "^19.8.0",
     "@types/node": "^25.9.3",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.5.1",
     "typescript": "^6.0.3",
     "vitest": "^4.1.8"
   }

@@ -1,0 +1,9 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Lock files
+bun.lock linguist-generated
+
+# Generated assets
+dist/** linguist-generated
+.astro/** linguist-generated
