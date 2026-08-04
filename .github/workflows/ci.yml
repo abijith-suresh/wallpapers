@@ -13,8 +13,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  quality:
-    name: quality
+  bun-quality:
+    name: bun-quality
     uses: abijith-suresh/workflows/.github/workflows/bun-quality.yml@0f257b2642d2a010fefe0ff9d03374799d73eb44 # v0.3.0
     permissions:
       contents: read
@@ -24,3 +24,21 @@ jobs:
     uses: abijith-suresh/workflows/.github/workflows/dependency-review.yml@b42be9571985efb1ce10970340250fcccc657050 # v0.1.0
     permissions:
       contents: read
+
+  quality:
+    name: quality
+    runs-on: ubuntu-latest
+    if: always()
+    needs: [bun-quality, dependency-review]
+
+    steps:
+      - name: Verify required checks passed
+        env:
+          BUN_QUALITY_RESULT: ${{ needs.bun-quality.result }}
+          DEPENDENCY_REVIEW_RESULT: ${{ needs.dependency-review.result }}
+        run: |
+          if [[ "$BUN_QUALITY_RESULT" != "success" || "$DEPENDENCY_REVIEW_RESULT" != "success" ]]; then
+            echo "bun-quality: $BUN_QUALITY_RESULT"
+            echo "dependency-review: $DEPENDENCY_REVIEW_RESULT"
+            exit 1
+          fi
