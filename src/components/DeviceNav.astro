@@ -1,0 +1,36 @@
+---
+interface Props {
+  current?: string;
+}
+
+const { current } = Astro.props;
+
+const links = [
+  { label: "All", href: "/" },
+  { label: "Desktop", href: "/desktop/" },
+  { label: "Mobile", href: "/mobile/" },
+  { label: "Tablet", href: "/tablet/" },
+];
+---
+
+<nav class="device-nav" aria-label="Filter by device">
+  <ul class="device-nav-list">
+    {links.map((link) => {
+      const isActive = !current
+        ? link.href === "/"
+        : link.href.includes(`/${current}/`);
+
+      return (
+        <li>
+          <a
+            href={link.href}
+            class={`device-nav-link${isActive ? " device-nav-link--active" : ""}`}
+            aria-current={isActive ? "page" : undefined}
+          >
+            {link.label}
+          </a>
+        </li>
+      );
+    })}
+  </ul>
+</nav>
