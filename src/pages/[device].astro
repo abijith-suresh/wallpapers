@@ -1,0 +1,36 @@
+---
+import { getCollection } from "astro:content";
+import type { GetStaticPaths } from "astro";
+import Layout from "../layouts/Layout.astro";
+import WallpaperGrid from "../components/WallpaperGrid.astro";
+import DeviceNav from "../components/DeviceNav.astro";
+
+export const getStaticPaths = (() => {
+  return [
+    { params: { device: "desktop" } },
+    { params: { device: "mobile" } },
+    { params: { device: "tablet" } },
+  ];
+}) satisfies GetStaticPaths;
+
+const { device } = Astro.params;
+
+const allWallpapers = await getCollection("wallpapers");
+const wallpapers = allWallpapers.filter((w) => w.data.devices.includes(device as "desktop" | "mobile" | "tablet"));
+
+const pageTitle = `${device.charAt(0).toUpperCase()}${device.slice(1)} Wallpapers`;
+const description = `${pageTitle} for your ${device}.`;
+---
+
+<Layout title={pageTitle} description={description}>
+  <section class="page-shell" aria-labelledby="page-title">
+    <header class="page-header">
+      <p class="eyebrow">abijith-suresh/wallpapers</p>
+      <h1 id="page-title">{pageTitle}</h1>
+      <p class="page-description">A small personal gallery for wallpapers I can legally share.</p>
+    </header>
+
+    <DeviceNav current={device} />
+    <WallpaperGrid wallpapers={wallpapers} />
+  </section>
+</Layout>
