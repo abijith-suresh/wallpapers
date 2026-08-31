@@ -26,16 +26,16 @@
     "verify": "bun run wallpapers:check && bun run type-check && bun run lint && bun run format:check && bun run test && bun run build"
   },
   "dependencies": {
-    "astro": "^7.2.4"
+    "astro": "^7.2.9"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
-    "@biomejs/biome": "^2.5.9",
+    "@biomejs/biome": "^2.5.11",
     "@commitlint/cli": "^21.2.2",
     "@commitlint/config-conventional": "^21.2.2",
-    "@types/node": "^26.2.0",
+    "@types/node": "^26.4.0",
     "husky": "^9.1.7",
-    "lint-staged": "^17.3.0",
+    "lint-staged": "^17.4.1",
     "typescript": "^7.0.2",
     "vitest": "^4.1.11"
   }
