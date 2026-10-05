@@ -15,13 +15,13 @@ concurrency:
 jobs:
   bun-quality:
     name: bun-quality
-    uses: abijith-suresh/workflows/.github/workflows/bun-quality.yml@0f257b2642d2a010fefe0ff9d03374799d73eb44 # v0.3.0
+    uses: abijith-suresh/workflows/.github/workflows/bun-quality.yml@163055ac24b4169ae93ae05c5d7491b1cd5d96c7 # v0.6.0
     permissions:
       contents: read
 
   dependency-review:
     name: dependency-review
-    uses: abijith-suresh/workflows/.github/workflows/dependency-review.yml@0f257b2642d2a010fefe0ff9d03374799d73eb44 # v0.3.0
+    uses: abijith-suresh/workflows/.github/workflows/dependency-review.yml@163055ac24b4169ae93ae05c5d7491b1cd5d96c7 # v0.6.0
     permissions:
       contents: read
 
