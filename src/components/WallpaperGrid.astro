@@ -1,9 +1,9 @@
 ---
-import type { Wallpaper } from "../lib/wallpapers";
+import type { CollectionEntry } from "astro:content";
 import WallpaperCard from "./WallpaperCard.astro";
 
 interface Props {
-  wallpapers: Wallpaper[];
+  wallpapers: CollectionEntry<"wallpapers">[];
 }
 
 const { wallpapers } = Astro.props;
@@ -12,9 +12,9 @@ const { wallpapers } = Astro.props;
 {
   wallpapers.length > 0 ? (
     <ul class="wallpaper-grid" aria-label="Wallpapers">
-      {wallpapers.map((wallpaper) => (
+      {wallpapers.map((wallpaper, index) => (
         <li>
-          <WallpaperCard wallpaper={wallpaper} />
+          <WallpaperCard wallpaper={wallpaper} index={index} />
         </li>
       ))}
     </ul>

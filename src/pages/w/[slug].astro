@@ -1,0 +1,101 @@
+---
+import { getCollection, getEntry } from "astro:content";
+import { Picture } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import type { GetStaticPaths } from "astro";
+import Layout from "../../layouts/Layout.astro";
+
+export const getStaticPaths = (async () => {
+  const wallpapers = await getCollection("wallpapers");
+  return wallpapers.map((w) => ({
+    params: {
+      slug: w.data.fileName.replace(/\.[^.]+$/, ""),
+    },
+    props: { wallpaperId: w.id, wallpaperFileName: w.data.fileName },
+  }));
+}) satisfies GetStaticPaths;
+
+const { wallpaperId } = Astro.props;
+
+const wallpaper = await getEntry("wallpapers", wallpaperId);
+if (!wallpaper) {
+  return Astro.rewrite("/404/");
+}
+
+const { data } = wallpaper;
+
+const baseUrl = import.meta.env.BASE_URL;
+const fileUrl = `${baseUrl}files/${encodeURIComponent(data.fileName)}`;
+
+const images = import.meta.glob<{ default: ImageMetadata }>(
+  "/src/assets/wallpapers/*.{jpg,jpeg,png,webp,avif}"
+);
+const imageKey = `/src/assets/wallpapers/${data.fileName}`;
+
+const deviceLabels: Record<string, string> = {
+  desktop: "Desktop",
+  mobile: "Mobile",
+  tablet: "Tablet",
+};
+---
+
+<Layout
+  title={`${data.title} - Wallpapers`}
+  description={`${data.title} by ${data.creator ?? "unknown"} — ${data.width}×${data.height}`}
+>
+  <section class="page-shell page-shell--detail" aria-labelledby="detail-title">
+
+    <nav class="detail-back">
+      <a href={`${baseUrl}`} class="text-link">&larr; Gallery</a>
+    </nav>
+
+    <div
+      class="detail-image-wrapper"
+      transition:name="wallpaper-image"
+      transition:animate="fade"
+    >
+      {
+        images[imageKey] ? (
+          <Picture
+            src={images[imageKey]()}
+            formats={["avif", "webp"]}
+            widths={[800, 1600, 2400]}
+            sizes="(max-width: 800px) 100vw, 80vw"
+            alt={data.title}
+            loading="eager"
+            fetchpriority="high"
+            class="detail-image"
+          />
+        ) : (
+          <img
+            class="detail-image"
+            src={fileUrl}
+            alt={data.title}
+            loading="eager"
+            decoding="async"
+          />
+        )
+      }
+    </div>
+
+    <header class="detail-header">
+      <h1 id="detail-title">{data.title}</h1>
+      {data.creator ? <p class="detail-creator">by {data.creator}</p> : null}
+      <p class="wallpaper-resolution">{data.width} &times; {data.height}</p>
+      <ul class="detail-devices" aria-label="Fits these devices">
+        {data.devices.map((device: string) => (
+          <li class="detail-device-tag">{deviceLabels[device] ?? device}</li>
+        ))}
+      </ul>
+    </header>
+
+    <a
+      href={fileUrl}
+      download={data.fileName}
+      class="detail-download-btn"
+    >
+      Download
+    </a>
+
+  </section>
+</Layout>

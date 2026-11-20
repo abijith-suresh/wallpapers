@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import { ClientRouter } from "astro:transitions";
 
 interface Props {
   title: string;
@@ -17,9 +18,35 @@ const { title, description } = Astro.props;
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
     <meta name="theme-color" content="#111111" />
-    <link rel="preload" as="font" type="font/woff2" crossorigin="anonymous" href={`${import.meta.env.BASE_URL}fonts/IBMPlexSansVar-Roman.woff2`} />
-    <link rel="preload" as="font" type="font/woff2" crossorigin="anonymous" href={`${import.meta.env.BASE_URL}fonts/IBMPlexMono-Regular.woff2`} />
+    <link rel="preload" as="font" type="font/woff2" crossorigin="anonymous" href={`${import.meta.env.BASE_URL}/fonts/IBMPlexSansVar-Roman.woff2`} />
+    <link rel="preload" as="font" type="font/woff2" crossorigin="anonymous" href={`${import.meta.env.BASE_URL}/fonts/IBMPlexMono-Regular.woff2`} />
     <title>{title}</title>
+    <ClientRouter />
+    <style is:global>
+      @font-face {
+        font-family: "IBM Plex Sans";
+        src: url(`${import.meta.env.BASE_URL}/fonts/IBMPlexSansVar-Roman.woff2`) format("woff2");
+        font-weight: 100 700;
+        font-style: normal;
+        font-display: swap;
+      }
+
+      @font-face {
+        font-family: "IBM Plex Sans";
+        src: url(`${import.meta.env.BASE_URL}/fonts/IBMPlexSansVar-Italic.woff2`) format("woff2");
+        font-weight: 100 700;
+        font-style: italic;
+        font-display: swap;
+      }
+
+      @font-face {
+        font-family: "IBM Plex Mono";
+        src: url(`${import.meta.env.BASE_URL}/fonts/IBMPlexMono-Regular.woff2`) format("woff2");
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+      }
+    </style>
   </head>
   <body>
     <a href="#main-content" class="skip-link">Skip to content</a>
